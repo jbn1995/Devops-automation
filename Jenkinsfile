@@ -20,18 +20,22 @@ pipeline {
         stage('Push image to Hub'){
             steps{
                 script{
-                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhub-pwd')]) {
-                   sh 'docker login -u jabin95 -p ${dockerhub-pwd}'
-
+                    withCredentials([usernameColonPassword(credentialsId: 'dockerID', variable: 'dockerId')]) {
+                    sh 'docker login -u jabin95 -p ${dockerID}'
+                    
 }
-                   sh 'docker push jabin95/devops-integration'
+                    sh 'docker push jabin95/devops-integration'
                 }
             }
         }
-        stage('Deploy to k8s'){
-            steps{
-                script{
-                    kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
+        stage('Deploy to k8s') {
+            steps {
+                script {
+                    // Point kubectl to Minikube's context
+                    sh 'kubectl config use-context minikube'
+
+                    // Deploy the Kubernetes configurations
+                    sh 'kubectl apply -f deploymentservice.yaml'
                 }
             }
         }
