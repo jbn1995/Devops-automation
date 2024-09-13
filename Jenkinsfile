@@ -13,7 +13,7 @@ pipeline {
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t jabin95/devops-integration .'
+                    sh 'docker build -t jabin95/devops-integration:03 .'
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
                    withCredentials([usernamePassword(credentialsId: 'dockerID', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'docker login -u $USERNAME -p $PASSWORD'
                     }
-                    sh 'docker push jabin95/devops-integration'
+                    sh 'docker push jabin95/devops-integration:03'
                 }
             }
         }
@@ -35,6 +35,8 @@ pipeline {
 
                     // Deploy the Kubernetes configurations
                     sh 'kubectl apply -f deploymentservice.yaml'
+		    sh 'kubectl get services'
+		    sh 'minikube service springboot-k8s --url'
                 }
             }
         }
