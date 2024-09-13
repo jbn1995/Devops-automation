@@ -34,7 +34,7 @@ pipeline {
                     sh 'kubectl config use-context minikube'
 
                     // Deploy the Kubernetes configurations
-                    sh 'kubectl apply -f deploymentservice.yaml'
+                    sh 'kubectl apply -f deploymentservice.yaml --validate=false'
 		    sh 'kubectl get services'
 		    sh 'minikube service springboot-k8s --url'
                 }
